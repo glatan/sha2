@@ -1,8 +1,21 @@
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
-import { Sha256 } from "./sha256.ts";
 
+import { Sha256 } from "./sha256.ts";
+import { stringToBytes } from "./utils.ts";
+
+// https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Standards-and-Guidelines/documents/examples/SHA256.pdf
 // https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Standards-and-Guidelines/documents/examples/SHA2_Additional.pdf
 const TEST_CASES: Array<[string, Uint8Array]> = [
+  [
+    "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+    stringToBytes("abc"),
+  ],
+  [
+    "cf5b16a778af8380036ce59e7b0492370b249b11e8f07a51afac45037afee9d1",
+    stringToBytes(
+      "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu",
+    ),
+  ],
   [
     "68325720aabd7c82f30f554b313d0570c95accbb7dc4b5aae11204c08ffe732b",
     Uint8Array.from([0xbd]),
