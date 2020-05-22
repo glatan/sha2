@@ -6,7 +6,7 @@ jobs:
   test:
     name: deno test
     runs-on: ubuntu-latest
-    container: "hayd/debian-deno:1.0.1"
     steps:
-      - run: deno --version && ls -a /
-      - run: cd ../ && ls -a && deno test
+      - run: curl -fsSL https://deno.land/x/install/install.sh | sh
+      - run: deno --version
+      - run: deno test
