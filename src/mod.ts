@@ -142,10 +142,10 @@ export class Word32 implements Hash {
         w[t] = this.#wordBlock[t + i * 16];
       }
       for (let t = 16; t < 64; t++) {
-        w[t] = (smallSigma32_1(w[t - 2]) +
+        w[t] = smallSigma32_1(w[t - 2]) +
           w[t - 7] +
           smallSigma32_0(w[t - 15]) +
-          w[t - 16]) & 0xFFFF_FFFF;
+          w[t - 16];
       }
       a = this.#status[0];
       b = this.#status[1];
@@ -156,30 +156,30 @@ export class Word32 implements Hash {
       g = this.#status[6];
       h = this.#status[7];
       for (let t = 0; t < 64; t++) {
-        temp_1 = (h +
+        temp_1 = h +
           bigSigma32_1(e) +
           ch32(e, f, g) +
           K32[t] +
-          w[t]) & 0xFFFF_FFFF;
-        temp_2 = (bigSigma32_0(a) +
-          maj32(a, b, c)) & 0xFFFF_FFFF;
+          w[t];
+        temp_2 = bigSigma32_0(a) +
+          maj32(a, b, c);
         h = g;
         g = f;
         f = e;
-        e = (d + temp_1) & 0xFFFF_FFFF;
+        e = d + temp_1;
         d = c;
         c = b;
         b = a;
-        a = (temp_1 + temp_2) & 0xFFFF_FFFF;
+        a = temp_1 + temp_2;
       }
-      this.#status[0] = (this.#status[0] + a) & 0xFFFF_FFFF;
-      this.#status[1] = (this.#status[1] + b) & 0xFFFF_FFFF;
-      this.#status[2] = (this.#status[2] + c) & 0xFFFF_FFFF;
-      this.#status[3] = (this.#status[3] + d) & 0xFFFF_FFFF;
-      this.#status[4] = (this.#status[4] + e) & 0xFFFF_FFFF;
-      this.#status[5] = (this.#status[5] + f) & 0xFFFF_FFFF;
-      this.#status[6] = (this.#status[6] + g) & 0xFFFF_FFFF;
-      this.#status[7] = (this.#status[7] + h) & 0xFFFF_FFFF;
+      this.#status[0] = this.#status[0] + a;
+      this.#status[1] = this.#status[1] + b;
+      this.#status[2] = this.#status[2] + c;
+      this.#status[3] = this.#status[3] + d;
+      this.#status[4] = this.#status[4] + e;
+      this.#status[5] = this.#status[5] + f;
+      this.#status[6] = this.#status[6] + g;
+      this.#status[7] = this.#status[7] + h;
     }
   }
   hashToBytes(): Uint8Array {
