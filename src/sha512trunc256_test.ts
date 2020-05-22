@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.52.0/testing/asserts.ts";
 
 import { Sha512Trunc256 } from "./sha512trunc256.ts";
 import { stringToBytes } from "./utils.ts";

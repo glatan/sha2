@@ -5,7 +5,7 @@ SHA-2 family for Deno.
 ## Example
 
 ```ts
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.52.0/testing/asserts.ts";
 
 import {
   Sha224,
