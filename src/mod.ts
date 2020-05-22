@@ -113,7 +113,7 @@ export class Word32 implements Hash {
     // append zeros
     paddedMessage = concat(
       paddedMessage,
-      new Uint8Array(64 - (messageByteLength + 8 + 1) % 64),
+      new Uint8Array(((64 - (messageByteLength + 8 + 1)) % 64) & 0b0011_1111),
     );
     // append bit-length of message
     paddedMessage = concat(

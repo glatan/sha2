@@ -24,10 +24,10 @@ const TEST_CASES: Array<[string, Uint8Array]> = [
     "7abc22c0ae5af26ce93dbb94433a0e0b2e119d014f8e7f65bd56c61ccccd9504",
     Uint8Array.from([0xc9, 0x8c, 0x8e, 0x55]),
   ],
-  // [
-  //   "02779466cdec163811d078815c633f21901413081449002f24aa3e80f0b88ef7",
-  //   new Uint8Array(55),
-  // ],
+  [
+    "02779466cdec163811d078815c633f21901413081449002f24aa3e80f0b88ef7",
+    new Uint8Array(55),
+  ],
   [
     "d4817aa5497628e7c77e6b606107042bbba3130888c5f47a375e6179be789fbb",
     new Uint8Array(56),
