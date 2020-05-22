@@ -1,23 +1,13 @@
 import { sprintf } from "https://deno.land/std/fmt/mod.ts";
 
 // Uint32
-export function rotateRight(x: number, n: number): number {
+export function Uint32RotateRight(x: number, n: number): number {
   return ((x >>> (n % 32)) | (x << ((32 - n) % 32)));
-}
-
-// Uint32
-export function rotateLeft(x: number, n: number): number {
-  return ((x << (n % 32)) | (x >>> ((32 - n) % 32)));
 }
 
 // BigUint64
 export function BigUint64rotateRight(x: bigint, n: bigint): bigint {
   return ((x >> (n % 64n)) | (x << ((64n - n) % 64n))) & 0xFFFF_FFFF_FFFF_FFFFn;
-}
-
-// BigUint64
-export function BigUint64rotateLeft(x: bigint, n: bigint): bigint {
-  return ((x << (n % 64n)) | (x >> ((64n - n) % 64n))) & 0xFFFF_FFFF_FFFF_FFFFn;
 }
 
 // big endian
@@ -59,7 +49,7 @@ export function toBigUint64Array(bytes: Uint8Array): BigUint64Array {
 }
 
 // big endian
-export function toUint8Array(input: Uint32Array): Uint8Array {
+export function Uint32ArrayToUint8Array(input: Uint32Array): Uint8Array {
   let result = new Uint8Array(input.length * 4);
   for (let i = 0; i < input.length; i++) {
     result.set(
@@ -75,7 +65,7 @@ export function toUint8Array(input: Uint32Array): Uint8Array {
   return result;
 }
 
-export function BigUint64ArraytoUint8Array(input: BigUint64Array): Uint8Array {
+export function BigUint64ArrayToUint8Array(input: BigUint64Array): Uint8Array {
   let result = new Uint8Array(input.length * 8);
   for (let i = 0; i < input.length; i++) {
     result.set(

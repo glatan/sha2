@@ -51,19 +51,21 @@ function ch32(x: number, y: number, z: number): number {
 function maj32(x: number, y: number, z: number): number {
   return (x & y) ^ (x & z) ^ (y & z);
 }
-function big_sigma32_0(x: number): number {
-  return utils.rotateRight(x, 2) ^ utils.rotateRight(x, 13) ^
-    utils.rotateRight(x, 22);
+function bigSigma32_0(x: number): number {
+  return utils.Uint32RotateRight(x, 2) ^ utils.Uint32RotateRight(x, 13) ^
+    utils.Uint32RotateRight(x, 22);
 }
-function big_sigma32_1(x: number): number {
-  return utils.rotateRight(x, 6) ^ utils.rotateRight(x, 11) ^
-    utils.rotateRight(x, 25);
+function bigSigma32_1(x: number): number {
+  return utils.Uint32RotateRight(x, 6) ^ utils.Uint32RotateRight(x, 11) ^
+    utils.Uint32RotateRight(x, 25);
 }
-function small_sigma32_0(x: number): number {
-  return utils.rotateRight(x, 7) ^ utils.rotateRight(x, 18) ^ (x >>> 3);
+function smallSigma32_0(x: number): number {
+  return utils.Uint32RotateRight(x, 7) ^ utils.Uint32RotateRight(x, 18) ^
+    (x >>> 3);
 }
-function small_sigma32_1(x: number): number {
-  return utils.rotateRight(x, 17) ^ utils.rotateRight(x, 19) ^ (x >>> 10);
+function smallSigma32_1(x: number): number {
+  return utils.Uint32RotateRight(x, 17) ^ utils.Uint32RotateRight(x, 19) ^
+    (x >>> 10);
 }
 
 // SHA-384, SHA-512, SHA-512/224 and SHA-512/256 Functions
@@ -73,21 +75,21 @@ function ch64(x: bigint, y: bigint, z: bigint): bigint {
 function maj64(x: bigint, y: bigint, z: bigint): bigint {
   return (x & y) ^ (x & z) ^ (y & z);
 }
-function big_sigma64_0(x: bigint): bigint {
+function bigSigma64_0(x: bigint): bigint {
   return utils.BigUint64rotateRight(x, 28n) ^
     utils.BigUint64rotateRight(x, 34n) ^
     utils.BigUint64rotateRight(x, 39n);
 }
-function big_sigma64_1(x: bigint): bigint {
+function bigSigma64_1(x: bigint): bigint {
   return utils.BigUint64rotateRight(x, 14n) ^
     utils.BigUint64rotateRight(x, 18n) ^
     utils.BigUint64rotateRight(x, 41n);
 }
-function small_sigma64_0(x: bigint): bigint {
+function smallSigma64_0(x: bigint): bigint {
   return utils.BigUint64rotateRight(x, 1n) ^ utils.BigUint64rotateRight(x, 8n) ^
     (x >> 7n & 0xFFFF_FFFF_FFFF_FFFFn);
 }
-function small_sigma64_1(x: bigint): bigint {
+function smallSigma64_1(x: bigint): bigint {
   return utils.BigUint64rotateRight(x, 19n) ^
     utils.BigUint64rotateRight(x, 61n) ^ (x >> 6n) & 0xFFFF_FFFF_FFFF_FFFFn;
 }
@@ -140,9 +142,9 @@ export class Word32 implements Hash {
         w[t] = this.#wordBlock[t + i * 16];
       }
       for (let t = 16; t < 64; t++) {
-        w[t] = (small_sigma32_1(w[t - 2]) +
+        w[t] = (smallSigma32_1(w[t - 2]) +
           w[t - 7] +
-          small_sigma32_0(w[t - 15]) +
+          smallSigma32_0(w[t - 15]) +
           w[t - 16]) & 0xFFFF_FFFF;
       }
       a = this.#status[0];
@@ -155,11 +157,11 @@ export class Word32 implements Hash {
       h = this.#status[7];
       for (let t = 0; t < 64; t++) {
         temp_1 = (h +
-          big_sigma32_1(e) +
+          bigSigma32_1(e) +
           ch32(e, f, g) +
           K32[t] +
           w[t]) & 0xFFFF_FFFF;
-        temp_2 = (big_sigma32_0(a) +
+        temp_2 = (bigSigma32_0(a) +
           maj32(a, b, c)) & 0xFFFF_FFFF;
         h = g;
         g = f;
@@ -187,7 +189,7 @@ export class Word32 implements Hash {
     this.padding();
     this.round();
     this.#finished = true;
-    return Uint8Array.from(utils.toUint8Array(this.#status));
+    return Uint8Array.from(utils.Uint32ArrayToUint8Array(this.#status));
   }
   hashToLowerHex(): string {
     return utils.bytesToLowerHex(this.hashToBytes());
@@ -255,9 +257,9 @@ export class Word64 implements Hash {
         w[t] = this.#wordBlock[t + i * 16];
       }
       for (let t = 16; t < 80; t++) {
-        w[t] = (small_sigma64_1(w[t - 2]) +
+        w[t] = (smallSigma64_1(w[t - 2]) +
           w[t - 7] +
-          small_sigma64_0(w[t - 15]) +
+          smallSigma64_0(w[t - 15]) +
           w[t - 16]);
       }
       a = this.#status[0];
@@ -270,11 +272,11 @@ export class Word64 implements Hash {
       h = this.#status[7];
       for (let t = 0; t < 80; t++) {
         temp_1 = (h +
-          big_sigma64_1(e) +
+          bigSigma64_1(e) +
           ch64(e, f, g) +
           K64[t] +
           w[t]) & 0xFFFF_FFFF_FFFF_FFFFn;
-        temp_2 = (big_sigma64_0(a) +
+        temp_2 = (bigSigma64_0(a) +
           maj64(a, b, c)) & 0xFFFF_FFFF_FFFF_FFFFn;
         h = g;
         g = f;
@@ -302,7 +304,7 @@ export class Word64 implements Hash {
     this.padding();
     this.round();
     this.#finished = true;
-    return Uint8Array.from(utils.BigUint64ArraytoUint8Array(this.#status));
+    return Uint8Array.from(utils.BigUint64ArrayToUint8Array(this.#status));
   }
   hashToLowerHex(): string {
     return utils.bytesToLowerHex(this.hashToBytes());
