@@ -7,7 +7,7 @@ import {
   Sha512,
   Sha512Trunc224,
   Sha512Trunc256,
-} from "./mod.ts";
+} from "https://deno.land/x/sha2/mod.ts";
 
 assertEquals(
   new Sha224().hashToLowerHex(new Uint8Array()),
