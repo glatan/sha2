@@ -1,0 +1,13 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: deno test
+    runs-on: ubuntu-latest
+    container:
+      image: "hayd/debian-deno:1.0.1"
+    steps:
+      - run: deno --version
+      - run: deno test
