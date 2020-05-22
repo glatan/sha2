@@ -6,8 +6,7 @@ jobs:
   test:
     name: deno test
     runs-on: ubuntu-latest
-    container:
-      image: "hayd/debian-deno:1.0.1"
+    container: "hayd/debian-deno:1.0.1"
     steps:
-      - run: deno --version
+      - run: deno --version && ls -a && pwd
       - run: deno test
