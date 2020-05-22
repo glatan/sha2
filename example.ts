@@ -1,10 +1,3 @@
-# SHA-2
-
-SHA-2 family for Deno.
-
-## Example
-
-```ts
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 import {
@@ -42,4 +35,3 @@ assertEquals(
   "c672b8d1ef56ed28ab87c3622c5114069bdd3ad7b8f9737498d0c01ecef0967a"
     .toUpperCase(),
 );
-```
