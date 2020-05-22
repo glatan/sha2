@@ -66,6 +66,32 @@ function small_sigma32_1(x: number): number {
   return utils.rotateRight(x, 17) ^ utils.rotateRight(x, 19) ^ (x >>> 10);
 }
 
+// SHA-384, SHA-512, SHA-512/224 and SHA-512/256 Functions
+function ch64(x: bigint, y: bigint, z: bigint): bigint {
+  return (x & y) ^ (~x & z);
+}
+function maj64(x: bigint, y: bigint, z: bigint): bigint {
+  return (x & y) ^ (x & z) ^ (y & z);
+}
+function big_sigma64_0(x: bigint): bigint {
+  return utils.BigUint64rotateRight(x, 28n) ^
+    utils.BigUint64rotateRight(x, 34n) ^
+    utils.BigUint64rotateRight(x, 39n);
+}
+function big_sigma64_1(x: bigint): bigint {
+  return utils.BigUint64rotateRight(x, 14n) ^
+    utils.BigUint64rotateRight(x, 18n) ^
+    utils.BigUint64rotateRight(x, 41n);
+}
+function small_sigma64_0(x: bigint): bigint {
+  return utils.BigUint64rotateRight(x, 1n) ^ utils.BigUint64rotateRight(x, 8n) ^
+    (x >> 7n & 0xFFFF_FFFF_FFFF_FFFFn);
+}
+function small_sigma64_1(x: bigint): bigint {
+  return utils.BigUint64rotateRight(x, 19n) ^
+    utils.BigUint64rotateRight(x, 61n) ^ (x >> 6n) & 0xFFFF_FFFF_FFFF_FFFFn;
+}
+
 // for 32bit word SHA-2 family(SHA-224 and SHA-256)
 export class Word32 implements Hash {
   #finished: boolean;
@@ -162,6 +188,121 @@ export class Word32 implements Hash {
     this.round();
     this.#finished = true;
     return Uint8Array.from(utils.toUint8Array(this.#status));
+  }
+  hashToLowerHex(): string {
+    return utils.bytesToLowerHex(this.hashToBytes());
+  }
+  hashToUpperHex(): string {
+    return this.hashToLowerHex().toUpperCase();
+  }
+}
+
+// for 64bit word SHA-2 family(SHA-384, SHA-512, SHA-512/224 and SHA-512/256)
+export class Word64 implements Hash {
+  #finished: boolean;
+  #message: Uint8Array;
+  #status: BigUint64Array;
+  #wordBlock: BigUint64Array;
+  protected constructor(h: BigUint64Array, message: Uint8Array) {
+    this.#finished = false;
+    this.#message = message;
+    this.#status = h;
+    this.#wordBlock = new BigUint64Array(16);
+  }
+  protected padding() {
+    let paddedMessage = Uint8Array.from(this.#message);
+    const messageByteLength = this.#message.length;
+    const messageBitLength: bigint = BigInt(messageByteLength) * 8n;
+    // append 0x80
+    paddedMessage = concat(paddedMessage, Uint8Array.from([0x80]));
+    // append zeros
+    paddedMessage = concat(
+      paddedMessage,
+      new Uint8Array(
+        ((128 - (messageByteLength + 16 + 1)) % 128) & 0b0111_1111,
+      ),
+    );
+    // append bit-length of message
+    paddedMessage = concat(
+      paddedMessage,
+      Uint8Array.from([
+        Number((messageBitLength >> 120n) & 0xFFn),
+        Number((messageBitLength >> 112n) & 0xFFn),
+        Number((messageBitLength >> 104n) & 0xFFn),
+        Number((messageBitLength >> 96n) & 0xFFn),
+        Number((messageBitLength >> 88n) & 0xFFn),
+        Number((messageBitLength >> 80n) & 0xFFn),
+        Number((messageBitLength >> 72n) & 0xFFn),
+        Number((messageBitLength >> 64n) & 0xFFn),
+        Number((messageBitLength >> 56n) & 0xFFn),
+        Number((messageBitLength >> 48n) & 0xFFn),
+        Number((messageBitLength >> 40n) & 0xFFn),
+        Number((messageBitLength >> 32n) & 0xFFn),
+        Number((messageBitLength >> 24n) & 0xFFn),
+        Number((messageBitLength >> 16n) & 0xFFn),
+        Number((messageBitLength >> 8n) & 0xFFn),
+        Number(messageBitLength & 0xFFn),
+      ]),
+    );
+    this.#wordBlock = utils.toBigUint64Array(paddedMessage);
+  }
+  protected round() {
+    let a = 0n, b = 0n, c = 0n, d = 0n, e = 0n, f = 0n, g = 0n, h = 0n;
+    let temp_1 = 0n, temp_2 = 0n;
+    let w = new BigUint64Array(80);
+    for (let i = 0; i < this.#wordBlock.length / 16; i++) {
+      for (let t = 0; t < 16; t++) {
+        w[t] = this.#wordBlock[t + i * 16];
+      }
+      for (let t = 16; t < 80; t++) {
+        w[t] = (small_sigma64_1(w[t - 2]) +
+          w[t - 7] +
+          small_sigma64_0(w[t - 15]) +
+          w[t - 16]);
+      }
+      a = this.#status[0];
+      b = this.#status[1];
+      c = this.#status[2];
+      d = this.#status[3];
+      e = this.#status[4];
+      f = this.#status[5];
+      g = this.#status[6];
+      h = this.#status[7];
+      for (let t = 0; t < 80; t++) {
+        temp_1 = (h +
+          big_sigma64_1(e) +
+          ch64(e, f, g) +
+          K64[t] +
+          w[t]) & 0xFFFF_FFFF_FFFF_FFFFn;
+        temp_2 = (big_sigma64_0(a) +
+          maj64(a, b, c)) & 0xFFFF_FFFF_FFFF_FFFFn;
+        h = g;
+        g = f;
+        f = e;
+        e = (d + temp_1) & 0xFFFF_FFFF_FFFF_FFFFn;
+        d = c;
+        c = b;
+        b = a;
+        a = (temp_1 + temp_2) & 0xFFFF_FFFF_FFFF_FFFFn;
+      }
+      this.#status[0] = this.#status[0] + a;
+      this.#status[1] = this.#status[1] + b;
+      this.#status[2] = this.#status[2] + c;
+      this.#status[3] = this.#status[3] + d;
+      this.#status[4] = this.#status[4] + e;
+      this.#status[5] = this.#status[5] + f;
+      this.#status[6] = this.#status[6] + g;
+      this.#status[7] = this.#status[7] + h;
+    }
+  }
+  hashToBytes(): Uint8Array {
+    if (this.#finished) {
+      return new Uint8Array();
+    }
+    this.padding();
+    this.round();
+    this.#finished = true;
+    return Uint8Array.from(utils.BigUint64ArraytoUint8Array(this.#status));
   }
   hashToLowerHex(): string {
     return utils.bytesToLowerHex(this.hashToBytes());
