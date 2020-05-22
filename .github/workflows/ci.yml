@@ -8,5 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: curl -fsSL https://deno.land/x/install/install.sh | sh
-      - run: deno --version
-      - run: deno test
+      - run: /home/runner/.deno/bin/deno --version
+      - run: /home/runner/.deno/bin/deno test
