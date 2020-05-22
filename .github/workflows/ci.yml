@@ -8,5 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     container: "hayd/debian-deno:1.0.1"
     steps:
-      - run: deno --version && ls -a && pwd
-      - run: deno test
+      - run: deno --version && ls -a /
+      - run: cd ../ && ls -a && deno test
