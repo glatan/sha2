@@ -9,5 +9,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: curl -fsSL https://deno.land/x/install/install.sh | sh
-      - run: /home/runner/.deno/bin/deno --version && pwd && ls
+      - run: /home/runner/.deno/bin/deno --version
       - run: /home/runner/.deno/bin/deno test
