@@ -2,9 +2,9 @@ import { concat } from "https://deno.land/std/bytes/mod.ts";
 import * as utils from "./utils.ts";
 
 interface Hash {
-  hashToBytes(): Uint8Array;
-  hashToLowerHex(): string;
-  hashToUpperHex(): string;
+  hashToBytes(message: Uint8Array): Uint8Array;
+  hashToLowerHex(message: Uint8Array): string;
+  hashToUpperHex(message: Uint8Array): string;
 }
 
 // SHA-224 and SHA-256 Constant
@@ -100,9 +100,9 @@ export class Word32 implements Hash {
   #message: Uint8Array;
   #status: Uint32Array;
   #wordBlock: Uint32Array;
-  protected constructor(h: Uint32Array, message: Uint8Array) {
+  protected constructor(h: Uint32Array) {
     this.#finished = false;
-    this.#message = message;
+    this.#message = new Uint8Array();
     this.#status = h;
     this.#wordBlock = new Uint32Array(16);
   }
@@ -182,20 +182,20 @@ export class Word32 implements Hash {
       this.#status[7] = this.#status[7] + h;
     }
   }
-  hashToBytes(): Uint8Array {
-    if (this.#finished) {
-      return new Uint8Array();
+  hashToBytes(message: Uint8Array): Uint8Array {
+    if (!this.#finished) {
+      this.#message = message;
+      this.padding();
+      this.round();
+      this.#finished = true;
     }
-    this.padding();
-    this.round();
-    this.#finished = true;
     return Uint8Array.from(utils.Uint32ArrayToUint8Array(this.#status));
   }
-  hashToLowerHex(): string {
-    return utils.bytesToLowerHex(this.hashToBytes());
+  hashToLowerHex(message: Uint8Array): string {
+    return utils.bytesToLowerHex(this.hashToBytes(message));
   }
-  hashToUpperHex(): string {
-    return this.hashToLowerHex().toUpperCase();
+  hashToUpperHex(message: Uint8Array): string {
+    return this.hashToLowerHex(message).toUpperCase();
   }
 }
 
@@ -205,9 +205,9 @@ export class Word64 implements Hash {
   #message: Uint8Array;
   #status: BigUint64Array;
   #wordBlock: BigUint64Array;
-  protected constructor(h: BigUint64Array, message: Uint8Array) {
+  protected constructor(h: BigUint64Array) {
     this.#finished = false;
-    this.#message = message;
+    this.#message = new Uint8Array();
     this.#status = h;
     this.#wordBlock = new BigUint64Array(16);
   }
@@ -297,19 +297,19 @@ export class Word64 implements Hash {
       this.#status[7] = this.#status[7] + h;
     }
   }
-  hashToBytes(): Uint8Array {
-    if (this.#finished) {
-      return new Uint8Array();
+  hashToBytes(message: Uint8Array): Uint8Array {
+    if (!this.#finished) {
+      this.#message = message;
+      this.padding();
+      this.round();
+      this.#finished = true;
     }
-    this.padding();
-    this.round();
-    this.#finished = true;
     return Uint8Array.from(utils.BigUint64ArrayToUint8Array(this.#status));
   }
-  hashToLowerHex(): string {
-    return utils.bytesToLowerHex(this.hashToBytes());
+  hashToLowerHex(message: Uint8Array): string {
+    return utils.bytesToLowerHex(this.hashToBytes(message));
   }
-  hashToUpperHex(): string {
-    return this.hashToLowerHex().toUpperCase();
+  hashToUpperHex(message: Uint8Array): string {
+    return this.hashToLowerHex(message).toUpperCase();
   }
 }

@@ -20,7 +20,7 @@ const TEST_CASES: Array<[string, Uint8Array]> = [
 Deno.test("SHA-512Trunc256", () => {
   for (let i = 0; i < TEST_CASES.length; i++) {
     assertEquals(
-      new Sha512Trunc256(TEST_CASES[i][1]).hashToLowerHex(),
+      new Sha512Trunc256().hashToLowerHex(TEST_CASES[i][1]),
       TEST_CASES[i][0],
     );
   }

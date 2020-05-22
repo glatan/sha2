@@ -49,7 +49,7 @@ const TEST_CASES: Array<[string, Uint8Array]> = [
 Deno.test("SHA-224", () => {
   for (let i = 0; i < TEST_CASES.length; i++) {
     assertEquals(
-      new Sha224(TEST_CASES[i][1]).hashToLowerHex(),
+      new Sha224().hashToLowerHex(TEST_CASES[i][1]),
       TEST_CASES[i][0],
     );
   }
