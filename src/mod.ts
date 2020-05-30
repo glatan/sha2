@@ -1,4 +1,4 @@
-import { concat } from "https://deno.land/std@0.53.0/bytes/mod.ts";
+import { concat } from "../depends.ts";
 import * as utils from "./utils.ts";
 
 interface Hash {

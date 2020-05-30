@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.53.0/testing/asserts.ts";
+import { assertEquals } from "../depends.ts";
 
 import { Sha384 } from "./sha384.ts";
 import { stringToBytes } from "./utils.ts";
