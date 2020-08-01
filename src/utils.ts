@@ -1,4 +1,4 @@
-import { sprintf } from "../depends.ts";
+import { sprintf } from "../deps/std/printf.ts";
 
 // Uint32
 export function Uint32RotateRight(x: number, n: number): number {

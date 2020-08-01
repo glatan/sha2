@@ -1,12 +1,10 @@
-import { assertEquals } from "https://deno.land/std@0.54.0/testing/asserts.ts";
-import {
-  Sha224,
-  Sha256,
-  Sha384,
-  Sha512,
-  Sha512Trunc224,
-  Sha512Trunc256,
-} from "https://deno.land/x/sha2/mod.ts";
+import { assertEquals } from "https://deno.land/std@0.63.0/testing/asserts.ts";
+import { Sha224 } from "https://deno.land/x/sha2/@0.2.0/mod/sha224.ts";
+import { Sha256 } from "https://deno.land/x/sha2/@0.2.0/mod/sha256.ts";
+import { Sha384 } from "https://deno.land/x/sha2/@0.2.0/mod/sha384.ts";
+import { Sha512 } from "https://deno.land/x/sha2/@0.2.0/mod/sha512.ts";
+import { Sha512Trunc224 } from "https://deno.land/x/sha2/@0.2.0/mod/sha512trunc224.ts";
+import { Sha512Trunc256 } from "https://deno.land/x/sha2/@0.2.0/mod/sha512trunc256.ts";
 
 assertEquals(
   new Sha224().hashToLowerHex(new Uint8Array()),
