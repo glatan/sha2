@@ -1,4 +1,4 @@
-import { assertEquals } from "../depends.ts";
+import { assertEquals } from "../deps/std/asserts.ts";
 
 import { Sha224 } from "./sha224.ts";
 import { stringToBytes } from "./utils.ts";

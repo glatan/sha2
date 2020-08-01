@@ -1,4 +1,4 @@
-import { concat } from "../depends.ts";
+import { concat } from "../deps/std/concat.ts";
 import * as utils from "./utils.ts";
 
 interface Hash {
